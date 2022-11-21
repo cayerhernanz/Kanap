@@ -1,24 +1,21 @@
-indexCatalogReturn();
-console.log(indexCatalogReturn);
 
 // Recuperation et insertion du catalogue dans la page d'index
-function indexCatalogReturn() {
+const indexCatalogReturn = async() => {
 
     //Recuperation du catalogue depuis l'API
-    function getCatalog(){
-        fetch('http://localhost:3000/api/products')
-            .then(function (res){
-                if (res.ok) {
-                    return res.json();
-                }
-            })
-
+        await fetch('http://localhost:3000/api/products')
+            .then((res)=>res.json())
+            
     //Ajout des produits dans le DOM
-            .then(function (APIresults) {
-                const products = APIresults;
-                console.log(products);
+            .then( (APIresults) => {
+                console.log('APIresults', APIresults);
+                catalogDisplay(APIresults);
+            })
+            .catch((err)=> console.log(err));
+}
 
-        //Création des articles item
+function catalogDisplay (products){
+    //Création des articles item
                 for (let product in products) {
                     let productCard = document.createElement("article");
                     document.querySelector(".items").appendChild(productCard);
@@ -40,9 +37,9 @@ function indexCatalogReturn() {
                     productCard.appendChild(productCardDescription);
                     productCardDescription.classList.add("productDescription");
                     productCardDescription.innerHTML = APIresults[product].description;
-
                 }
-
-            })
-        }
 }
+
+indexCatalogReturn();
+console.log(products);
+
