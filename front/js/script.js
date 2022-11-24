@@ -15,9 +15,12 @@ const indexCatalogReturn = async() => {
 
 function catalogDisplay (products){
     for (let product in products) {
-    //Création de l'élément lien
+    //Création des éléments lien
     let itemLink = document.createElement("a");
     document.querySelector(".items").appendChild(itemLink);
+
+    //Création du lien
+    itemLink.href=`product.html/id=${products[product]._id}`;
     
     //Création des articles item
         let productCard = document.createElement("article");
@@ -44,16 +47,3 @@ function catalogDisplay (products){
 }
 
 indexCatalogReturn();
-
- function catalogLinking (){{
-    //Création du lien
-        let url = new URL()
-        let params = new URLSearchParams(url.search);
-        params.append(products[product]._id);
-        console.log(params.getAll('_id'))
-        itemLink.href = url;
-    }
-
- }
-
- 
