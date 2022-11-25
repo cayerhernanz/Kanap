@@ -16,11 +16,11 @@ const indexCatalogReturn = async() => {
 function catalogDisplay (products){
     for (let product in products) {
     //Création des éléments lien
-    let itemLink = document.createElement("a");
-    document.querySelector(".items").appendChild(itemLink);
+        let itemLink = document.createElement("a");
+        document.querySelector(".items").appendChild(itemLink);
 
     //Création du lien
-    itemLink.href=`product.html/id=${products[product]._id}`;
+        itemLink.href=`product.html?${products[product]._id}`;
     
     //Création des articles item
         let productCard = document.createElement("article");
