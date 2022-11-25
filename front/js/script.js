@@ -20,7 +20,7 @@ function catalogDisplay (products){
         document.querySelector(".items").appendChild(itemLink);
 
     //Création du lien
-        itemLink.href=`product.html?${products[product]._id}`;
+        itemLink.href=`product.html?id=${products[product]._id}`;
     
     //Création des articles item
         let productCard = document.createElement("article");
