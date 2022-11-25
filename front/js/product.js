@@ -16,10 +16,10 @@ const productReturn = async() => {
 function productDisplay(product){
     //Ajout image
     let productImage = document.createElement("img");
+    document.querySelector(".item__img").appendChild(productImage);
     productImage.src = product.imageUrl;
-     productImage.alt= product.altTxt;
-    document.querySelector(".item__image").appendChild(productImage);
-
+    productImage.alt= product.altTxt;
+    
     //Ajout nom produit
     let productName = document.querySelector("#title");
     productName.innerHTML = product.name;
@@ -28,25 +28,23 @@ function productDisplay(product){
     let productPrice = document.querySelector("#price");
     productPrice.innerHTML = product.price;
         /* //Formatage prix
-        Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'EUR'}).format(productPrice);
-        //Soit recuperer la donnée et la diviser par 100
+        Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'EUR'}).format(productPrice); */
+       //Soit recuperer la donnée et la diviser par 100
         let productPriceData = product.price;
         let productPriceForm = productPriceData/100;
-        productPrice.innerHTML = productPriceForm  */
+        productPrice.innerHTML = productPriceForm;
 
     //Ajout description
     let productDescription = document.querySelector("#description");
     productDescription.innerHTML = product.description;
 
     //Ajout des options couleur
-     for (let color in colors){
+    for (let color in colors){
         let productColor = document.querySelector("option");
         let productColorOption = document.createElement("option");
         productColor.appendChild(productColorOption);
-        productColorOption.value = product.color[colors];
-        productColorOption.innerHTML = product.color[colors];
+        productColorOption.value = product.colors;
     }
 }
-
 
 productReturn();
