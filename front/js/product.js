@@ -1,6 +1,5 @@
 let params = new URL(document.location).searchParams;
 let id = params.get("id");
-console.log(id);
 
 const productReturn = async() => {
         await fetch(`http://localhost:3000/api/products/${id}`)
@@ -27,9 +26,7 @@ function productDisplay(product){
     //Ajout du prix
     let productPrice = document.querySelector("#price");
     productPrice.innerHTML = product.price;
-        /* //Formatage prix
-        Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'EUR'}).format(productPrice); */
-       //Soit recuperer la donnée et la diviser par 100
+        //Formatage prix
         let productPriceData = product.price;
         let productPriceForm = productPriceData/100;
         productPrice.innerHTML = productPriceForm;
@@ -39,11 +36,12 @@ function productDisplay(product){
     productDescription.innerHTML = product.description;
 
     //Ajout des options couleur
-    for (let color in colors){
-        let productColor = document.querySelector("option");
+    let productColor = document.querySelector("#colors");
+    for (let color of product.colors){
         let productColorOption = document.createElement("option");
         productColor.appendChild(productColorOption);
-        productColorOption.value = product.colors;
+        productColorOption.value = color;
+        productColorOption.innerHTML = color;
     }
 }
 
