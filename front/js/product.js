@@ -46,3 +46,53 @@ function productDisplay(product){
 }
 
 productReturn();
+
+//Création de variables pour les choix
+let productColor = document.querySelector("#colors");
+/* let colorSelected = productColor.selectedOptions;
+console.log(colorSelected); */
+let productQuantity = document.querySelector("#quantity");
+/* let quantitySelected = productQuantity.value;
+console.log(quantitySelected); */
+let addBtn = document.querySelector("#addToCart");
+
+//Envoi du panier
+addBtn.addEventListener("click", (event) =>{
+    event.preventDefault();
+
+    //Création des constantes pour les valeurs du produit
+    let colorSelected = productColor.selectedOptions;
+    let colorValue = colorSelected.value;
+    console.log(colorValue);
+    let quantitySelected = productQuantity.value;
+
+    //Conditions
+    if (productQuantity.value >= 1 && productQuantity.value <= 100){
+    //Recupération valeurs du produit
+        let productSelected = {
+            id: id,
+            color: colorSelected,
+            quantity: quantitySelected,
+        };
+        console.log(productSelected);
+
+        //Création du tableau des valeurs
+        let arrayCart = [];
+
+        //Vérfication que le LocalStorage existe
+        if (localStorage.getItem("cart-products") !== null) {
+            arrayCart = JSON.parse(localStorage.getItem("cart-products"));
+        }
+
+        //Sinon création du LocalStorage
+        else {
+            localStorage.setItem("cart-products", JSON.stringify(arrayCart))
+        }
+
+        //Insertion du produit dans l'array
+        arrayCart.push(productSelected);
+        console.log(arrayCart);
+    }
+})
+
+
