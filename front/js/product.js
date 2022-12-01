@@ -91,7 +91,7 @@ addBtn.addEventListener("click", (event) =>{
 
         //Insertion du produit dans l'array
         arrayCart.push(productSelected);
-        console.log(arrayCart);
+        console.log(arrayCart)
     }
 })
 
