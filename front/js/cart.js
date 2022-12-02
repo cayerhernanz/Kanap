@@ -12,7 +12,7 @@ const productReturn = async() => {
 }
 
 //Création de l'élément article du pannier et son contenu
-function cartProductCreation(product){
+function cartProductCreation(){
     let cart = document.querySelector("#cart__items");
 
     //Boucle pour tous les éléments du panier
@@ -91,8 +91,13 @@ function cartProductCreation(product){
         artItCntSetDeleteText.classList.add("deleteItem");
         artItCntSetDeleteText.innerHTML = "Supprimer";
 
+        console.log(product);
+
     }
 }
+
+cartProductCreation();
+
 
 //Affichage des produits
 function displayCart(){}

@@ -49,11 +49,7 @@ productReturn();
 
 //Création de variables pour les choix
 let productColor = document.querySelector("#colors");
-/* let colorSelected = productColor.selectedOptions;
-console.log(colorSelected); */
 let productQuantity = document.querySelector("#quantity");
-/* let quantitySelected = productQuantity.value;
-console.log(quantitySelected); */
 let addBtn = document.querySelector("#addToCart");
 
 //Envoi du panier
