@@ -57,23 +57,25 @@ addBtn.addEventListener("click", (event) =>{
     event.preventDefault();
 
     //Création des constantes pour les valeurs du produit
-    let colorSelected = productColor.selectedOptions;
-    let colorValue = colorSelected.value;
+    // let colorSelected = productColor.selectedOptions;
+    let colorValue = productColor.value;
     console.log(colorValue);
     let quantitySelected = productQuantity.value;
 
-    //Conditions
-    if (productQuantity.value >= 1 && productQuantity.value <= 100){
     //Recupération valeurs du produit
-        let productSelected = {
-            id: id,
-            color: colorSelected,
-            quantity: quantitySelected,
-        };
-        console.log(productSelected);
+    let productSelected = {
+        id: id,
+        color: colorValue,
+        quantity: quantitySelected,
+    };
+    console.log(productSelected);
+
+        //Conditions
+    if (quantitySelected >= 1 && quantitySelected <= 100){
 
         //Création du tableau des valeurs
         let arrayCart = [];
+        console.log(localStorage.getItem("cart-products"));
 
         //Vérfication que le LocalStorage existe
         if (localStorage.getItem("cart-products") !== null) {
