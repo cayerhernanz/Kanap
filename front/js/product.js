@@ -57,9 +57,7 @@ addBtn.addEventListener("click", (event) =>{
     event.preventDefault();
 
     //Création des constantes pour les valeurs du produit
-    // let colorSelected = productColor.selectedOptions;
     let colorValue = productColor.value;
-    console.log(colorValue);
     let quantitySelected = productQuantity.value;
 
     //Recupération valeurs du produit
@@ -69,9 +67,9 @@ addBtn.addEventListener("click", (event) =>{
         quantity: quantitySelected,
     };
     console.log(productSelected);
-
+    
         //Conditions
-    if (quantitySelected >= 1 && quantitySelected <= 100){
+    if (quantitySelected >= 1 && quantitySelected <= 100 && colorValue !== null){
 
         //Création du tableau des valeurs
         let arrayCart = [];
@@ -80,17 +78,48 @@ addBtn.addEventListener("click", (event) =>{
         //Vérfication que le LocalStorage existe
         if (localStorage.getItem("cart-products") !== null) {
             arrayCart = JSON.parse(localStorage.getItem("cart-products"));
+        
+            //Vérification que le même produit existe dans le tableau
+            if(arrayCart.includes(productSelected.id)){
+
+                //Si oui, récuperer de l'élément produit du tableau
+                let arrayCartElement = arrayCart.indexOf(productSelected.id);
+
+                //Comparer les couleurs
+                if(productSelected.color == arrayCartElement.color){
+
+                    //Si elles sont pareilles ajouter la quantité sélectionnée au tableau
+                    let arrCtElementNewQuantity = arrayCartElement.quantity + productSelected.quantity;
+                    arrayCart.splice(arrayCartElement, 3, arrCtElementNewQuantity);
+                }
+
+                //Si elles sont différentes insérer l'élément au tableau
+                else{
+                    arrayCart.push(productSelected);
+                }
+            }
+
+            //Si non, insertion de l'élément
+            else{
+                arrayCart.push(productSelected);
+            }
         }
 
-        //Sinon création du LocalStorage
+        //Sinon création du LocalStorage et insertion du prooduit
         else {
             localStorage.setItem("cart-products", JSON.stringify(arrayCart))
+            arrayCart.push(productSelected);
         }
 
-        //Insertion du produit dans l'array
-        arrayCart.push(productSelected);
         console.log(arrayCart)
+
+        //Rédirection à la page panier
+        // window.location.href = "cart.html";
+    }
+
+        //En cas de manque de donnée
+    else {
+        window.alert("Veuillez vérifier qu'une couleur est choisie et que la quantité est au moins de un produit.")
     }
 })
-
 

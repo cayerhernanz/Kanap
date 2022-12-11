@@ -3,7 +3,7 @@ let cartContent = JSON.parse(localStorage.getItem("cart-products"));
 
 //Appel à l'API pour récupérer les données nécéssaires
 const productReturn = async() => {
-    await fetch(`http://localhost:3000/api/products/${id}`)
+    await fetch('http://localhost:3000/api/products')
         .then((res)=>res.json())
         .then( (APIresults) => {
             console.log('APIresults', APIresults);
