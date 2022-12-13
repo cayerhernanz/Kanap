@@ -67,16 +67,24 @@ addBtn.addEventListener("click", (event) =>{
         quantity: quantitySelected,
     };
     console.log(productSelected);
+
+    //Création du tableau des valeurs
+    let arrayCart = [];
     
-        //Conditions
+    //Conditions
     if (quantitySelected >= 1 && quantitySelected <= 100 && colorValue !== null){
 
-        //Création du tableau des valeurs
-        let arrayCart = [];
-        console.log(localStorage.getItem("cart-products"));
+    
+        //Vérfication que le LocalStorage n'existe pas
+        if (localStorage.getItem("cart-products") == null) {
 
-        //Vérfication que le LocalStorage existe
-        if (localStorage.getItem("cart-products") !== null) {
+            //Création du LS et insertion du tableau
+            localStorage.setItem("cart-products", JSON.stringify(arrayCart));
+            arrayCart.push(productSelected);
+        }
+
+        //Sinon, récupération du tableau dans le LS
+        else{
             arrayCart = JSON.parse(localStorage.getItem("cart-products"));
         
             //Vérification que le même produit existe dans le tableau
@@ -103,14 +111,8 @@ addBtn.addEventListener("click", (event) =>{
             else{
                 arrayCart.push(productSelected);
             }
+            localStorage.setItem("cart-products", JSON.stringify(arrayCart));
         }
-
-        //Sinon création du LocalStorage et insertion du prooduit
-        else {
-            localStorage.setItem("cart-products", JSON.stringify(arrayCart))
-            arrayCart.push(productSelected);
-        }
-
         console.log(arrayCart)
 
         //Rédirection à la page panier
@@ -119,7 +121,7 @@ addBtn.addEventListener("click", (event) =>{
 
         //En cas de manque de donnée
     else {
-        window.alert("Veuillez vérifier qu'une couleur est choisie et que la quantité est au moins de un produit.")
+        window.alert("Veuillez vérifier qu'une couleur est choisie et que la quantité est au moins d'un produit.")
     }
 })
 
