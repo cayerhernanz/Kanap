@@ -5,6 +5,8 @@ console.log(cartContent);
 //Affichage des produits du pannier à partir du LS
 function cartProductDisplay(){
     let cart = document.querySelector("#cart__items");
+    let arrayCrtPrices = [];
+    let arrayCrtQuant = [];
 
     //Boucle pour tous les éléments du panier
     for (let object in cartContent){
@@ -44,6 +46,7 @@ function cartProductDisplay(){
         cartItCntDesProdColor.innerHTML = cartContent[object].color;
         
         let cartItCntDesProdPrice = document.createElement("p");
+        cartItCntDesProdPrice.classList.add("item__price");
         cartItemContentDescription.appendChild(cartItCntDesProdPrice);
 
         //Contenu-Settings
@@ -78,24 +81,65 @@ function cartProductDisplay(){
         cartItCntSetDeleteText.classList.add("deleteItem");
         cartItCntSetDeleteText.innerHTML = "Supprimer";
 
-        /*//Appel à l'API pour récupérer les données nécéssaires
-        const productReturn = async() => {
-        await fetch('http://localhost:3000/api/products')
+        //Appel à l'API pour récupérer les données nécéssaires
+        fetch(`http://localhost:3000/api/products/${id}`)
             .then((res)=>res.json())
-            .then( (APIresults) => {
-            console.log('APIresults', APIresults);
-        })
-            .catch((err)=> console.log(err));
-        }
+            .then((APIresults) => {
 
-        //Ajout des contenus à partir de l'API
-        productReturn();
-        cartItemImageFile.src = APIresults.imageUrl;
-        cartItemImageFile.alt = APIresults.altTxt;
-        cartItCntDesProdname.innerHTML = APIresults.name;
-        cartItCntDesProdPrice.innerHTML = APIresults.price;  */
+            //Ajout des contenus à partir de l'API
+            cartItemImageFile.src = APIresults.imageUrl;
+            cartItemImageFile.alt = APIresults.altTxt;
+            cartItCntDesProdname.innerHTML = APIresults.name;
+            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(APIresults.price/100);
+
+            //Calcul du prix en fonctiond e la quantité par produit
+            let itemTotalQuantity = parseFloat(cartItCntSetQuantValue.value);
+            let itemPriceCalc = parseFloat(APIresults.price);
+            let itemTotalPrice = itemPriceCalc * itemTotalQuantity;
+
+            //Création d'un tableau de prix dans le LS pour le calcul du total
+            arrayCrtPrices.push(itemTotalPrice);
+            console.log(arrayCrtPrices);
+            localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
+            })   
+
+        //Création d'un tableau de quantités dabs le LS pour le calcul du total
+        let itemTotalQuantity = parseFloat(cartContent[object].quantity);
+        arrayCrtQuant.push(itemTotalQuantity);
+        localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
     }
 }
 
 cartProductDisplay(cartContent);
 
+//Suppression des éléments du pannier
+/* let suppBtn = document.querySelectorAll("deleteItem");
+    suppBtn.addEventListener("click", ()) => {
+
+    } */
+
+//Calcul du prix total du pannier et de la quantité totale
+//Création des variables et d'un tableau contenant les prix
+let cartQuantity = document.querySelector("#totalQuantity");
+let cartTotalPrice = document.querySelector("#totalPrice");
+let arrayCrtPrices = [];
+let arrayCrtQuant = [];
+
+function displayCartPrice(){
+    arrayCrtPrices = JSON.parse(localStorage.getItem("cart-prices"));
+    let crtTotalPrice = arrayCrtPrices.reduce((accumulator, currentValue) => accumulator + currentValue);
+    let cartPrice = parseFloat(crtTotalPrice);
+    cartTotalPrice.innerHTML = cartPrice/100;
+}
+
+function displayCartQuantity(){
+    arrayCrtQuant = JSON.parse(localStorage.getItem("cart-quantities"));
+    let crtTotalQuant = arrayCrtQuant.reduce((accumulator, currentValue) => accumulator + currentValue);
+    let crtQuantValue = parseFloat(crtTotalQuant);
+    cartQuantity.innerHTML = crtQuantValue;
+}
+
+displayCartPrice();
+displayCartQuantity();
+
+//Validation du formulaire

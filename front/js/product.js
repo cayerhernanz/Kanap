@@ -91,9 +91,9 @@ addBtn.addEventListener("click", (event) =>{
             let prodSelectId = productSelected.id;
             let prodSelectVerif = arrayCart.includes();
             console.log(prodSelectVerif);
-            /* if(prodSelectVerif == true){
+            if(prodSelectVerif == true){
                 arrayCart.push(productSelected);
-                console.log(productSelected.id); */
+                console.log(productSelected.id);
               /*   //Si oui, récuperer de l'élément produit du tableau
                 let arrayCartElement = arrayCart.indexOf(productSelected.id);
 
@@ -112,13 +112,13 @@ addBtn.addEventListener("click", (event) =>{
                 else{
                     arrayCart.push(productSelected);
                 }
-                console.log(arrayCartElement); 
-            } */
+                console.log(arrayCartElement); */
+            }
 
             //Si non, insertion de l'élément
-            /* else{
+            else{
                 arrayCart.push(productSelected);
-            } */
+            }
             localStorage.setItem("cart-products", JSON.stringify(arrayCart));
         }
         console.log(arrayCart)
