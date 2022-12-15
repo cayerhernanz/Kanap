@@ -78,7 +78,6 @@ function cartProductDisplay(){
 
         let cartItCntSetDeleteText = document.createElement("p");
         cartItCntSetDelete.appendChild(cartItCntSetDeleteText);
-        cartItCntSetDeleteText.classList.add("deleteItem");
         cartItCntSetDeleteText.innerHTML = "Supprimer";
 
         //Appel à l'API pour récupérer les données nécéssaires
@@ -107,16 +106,30 @@ function cartProductDisplay(){
         let itemTotalQuantity = parseFloat(cartContent[object].quantity);
         arrayCrtQuant.push(itemTotalQuantity);
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
+
+        //Suppression des éléments du pannier
+        cartItCntSetDeleteText.addEventListener("click", function(){
+            event.preventDefault;
+            let result = confirm("Éliminer le produit du panier?");
+            if (result == true){
+                //recuperer l'id et la couleur de l'article
+                let currentItem = event.currentTarget;
+                let currentItemParent = currentItem.parentNode;
+                let selectItemCont = currentItemParent.parentNode;
+                let selectItemContParent = selectItemCont.parentNode;
+                let selectItem = selectItemContParent.parentNode;
+                let selectedItemId = selectItem.getAttribute("data-id");
+                let selectedItemColor = selectItem.getAttribute("data-color");
+
+                //Selectionner l'article avec cet id et couleur dans le LS - eliminer - recharger
+                // let selectedItem = cartContent.findIndex
+            
+            }
+        })
     }
 }
 
 cartProductDisplay(cartContent);
-
-//Suppression des éléments du pannier
-/* let suppBtn = document.querySelectorAll("deleteItem");
-    suppBtn.addEventListener("click", ()) => {
-
-    } */
 
 //Calcul du prix total du pannier et de la quantité totale
 //Création des variables et d'un tableau contenant les prix
