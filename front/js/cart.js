@@ -221,14 +221,33 @@ function formValidation(){
     }
 }
 
-//Appel à la validation au moment de commander
+//Requête POST API
+let customerContact;
+/* const sendOrder = await fetch('http://localhost:3000/api/products/order', {
+    method: 'POST',
+    body: customerContact,
+})
+sendOrder.json().then( data => {
+    console.log(data);
+}) */
+
+//Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
     event.preventDefault;
     formValidation();
     if(formValidated == true){
-        window.alert("funcionó");
-        //window.location.href="confirmation.html";
+        //Création de l'objet de contact
+        /* let customerContact = {
+            name: formName,
+            lastname: formLastName,
+            address: formAddress,
+            city: formCity,
+            email: formEmail,
+        };
+        console.log(customerContact); */
+        //fontion pour la requete POST de l'API
+        //window.location.href="confirmation.html";  
     }
     else{
         window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
