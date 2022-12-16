@@ -120,10 +120,15 @@ function cartProductDisplay(){
                 let selectItem = selectItemContParent.parentNode;
                 let selectedItemId = selectItem.getAttribute("data-id");
                 let selectedItemColor = selectItem.getAttribute("data-color");
+                console.log(selectedItemColor);
+                console.log(selectedItemId);
+                console.log(cartContent.includes(selectedItemId && selectedItemColor));
 
                 //Selectionner l'article avec cet id et couleur dans le LS - eliminer - recharger
                 // let selectedItem = cartContent.findIndex
-            
+                if (cartContent.includes(selectedItemId && selectedItemColor) == true){
+                    window.alert("funciona");
+                }
             }
         })
     }
@@ -156,3 +161,72 @@ displayCartPrice();
 displayCartQuantity();
 
 //Validation du formulaire
+//Création des différnetes RegExp pour la validation
+//Nom, prénom, ville
+let rxpNamesAndCity = new RegExp(/^[a-z ,.'-]+$/i);
+
+//Addresse
+let rxpAddress = new RegExp(/^[a-z ,.'-]+$, [0-9999999]/i);
+
+//email
+let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+
+//création des variables pour la fonction
+let formName = document.getElementById("firstName").valueOf;
+let formLastName = document.getElementById("lastName").valueOf;
+let formAddress = document.getElementById("address").valueOf;
+let formCity = document.getElementById("city").valueOf;
+let formEmail = document.getElementById("email").valueOf;
+let nameError = document.querySelector("#firstNameErrorMsg");
+let lastNameError = document.querySelector("#lastNameErrorMsg");
+let addressError = document.querySelector("#addressErrorMsg");
+let cityError = document.querySelector("#cityErrorMsg");
+let emailError = document.querySelector("#emailErrorMsg");
+let nameValidated;
+let lastNameValidated;
+let addressValidated;
+let cityValidated;
+let emailValidated;
+let formValidated;
+
+//Fonction de validation générique
+function formElementsTest (rxp, element, elementValidated, error){
+   let elementTest = rxp.test(element);
+   if(elementTest == true){
+    elementValidated = true;
+   }
+   else{
+    error.innerHTML = "Ceci est un message d'erreur.";
+   }
+}
+
+//Validation 2ème étape (tous les éléments)
+function formValidation(){
+    formElementsTest(rxpNamesAndCity, formName, nameValidated, nameError);
+    formElementsTest(rxpNamesAndCity, formLastName, lastNameValidated, lastNameError);
+    formElementsTest(rxpAddress, formAddress, addressValidated, addressError);
+    formElementsTest(rxpNamesAndCity, formCity, cityValidated, cityError);
+    formElementsTest(rxpEmail, formEmail, emailValidated, emailError);
+    if(nameValidated == true && lastNameValidated == true && addressValidated == true && cityValidated == true && emailValidated == true && elementsValidated == true)
+    {
+        formValidated = true;
+    }
+    else{
+        formValidated = false;
+    }
+}
+
+//Appel à la validation au moment de commander
+let orderBtn = document.querySelector("#order");
+orderBtn.addEventListener("click", function(){
+    event.preventDefault;
+    formValidation();
+    if(formValidated == true){
+        window.alert("funcionó");
+        //window.location.href="confirmation.html";
+    }
+    else{
+        window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
+    }
+})
+
