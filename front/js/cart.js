@@ -122,13 +122,18 @@ function cartProductDisplay(){
                 let selectedItemColor = selectItem.getAttribute("data-color");
                 console.log(selectedItemColor);
                 console.log(selectedItemId);
-                console.log(cartContent.includes(selectedItemId && selectedItemColor));
+                
 
-                //Selectionner l'article avec cet id et couleur dans le LS - eliminer - recharger
-                // let selectedItem = cartContent.findIndex
-                if (cartContent.includes(selectedItemId && selectedItemColor) == true){
-                    window.alert("funciona");
-                }
+                //Selectionner l'article avec cet id et couleur dans le LS
+                let selectedIndex = cartContent.indexOf(selectedItemId, selectedItemColor);
+                console.log(selectedIndex);
+                
+                //eliminer l'élément du tableau et MAJ du LS
+                /* cartContent.splice(selectedIndex, 1);
+                localStorage.setItem("cart-products", JSON.stringify(arrayCart)); */
+
+                //recharger la page
+                // location.reload;
             }
         })
     }
