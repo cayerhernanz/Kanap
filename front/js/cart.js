@@ -227,8 +227,8 @@ let customerContact;
     method: 'POST',
     body: customerContact,
 })
-sendOrder.json().then( data => {
-    console.log(data);
+sendOrder.json().then( orderid => {
+    console.log(orderid);
 }) */
 
 //Commander
