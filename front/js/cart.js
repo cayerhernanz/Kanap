@@ -89,7 +89,7 @@ function cartProductDisplay(){
             cartItemImageFile.src = APIresults.imageUrl;
             cartItemImageFile.alt = APIresults.altTxt;
             cartItCntDesProdname.innerHTML = APIresults.name;
-            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(APIresults.price/100);
+            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(APIresults.price);
 
             //Calcul du prix en fonctiond e la quantité par produit
             let itemTotalQuantity = parseFloat(cartItCntSetQuantValue.value);
@@ -152,7 +152,7 @@ function displayCartPrice(){
     arrayCrtPrices = JSON.parse(localStorage.getItem("cart-prices"));
     let crtTotalPrice = arrayCrtPrices.reduce((accumulator, currentValue) => accumulator + currentValue);
     let cartPrice = parseFloat(crtTotalPrice);
-    cartTotalPrice.innerHTML = cartPrice/100;
+    cartTotalPrice.innerHTML = cartPrice;
 }
 
 function displayCartQuantity(){
@@ -171,17 +171,17 @@ displayCartQuantity();
 let rxpNamesAndCity = new RegExp(/^[a-z ,.'-]+$/i);
 
 //Addresse
-let rxpAddress = new RegExp(/^[a-z ,.'-]+$, [0-9999999]/i);
+let rxpAddress = new RegExp(/^$[A-Za-z0-9]{5,100}/);
 
 //email
 let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
 
 //création des variables pour la fonction
-let formName = document.getElementById("firstName").valueOf;
-let formLastName = document.getElementById("lastName").valueOf;
-let formAddress = document.getElementById("address").valueOf;
-let formCity = document.getElementById("city").valueOf;
-let formEmail = document.getElementById("email").valueOf;
+let formName = document.getElementById("firstName").value;
+let formLastName = document.getElementById("lastName").value;
+let formAddress = document.getElementById("address").value;
+let formCity = document.getElementById("city").value;
+let formEmail = document.getElementById("email").value;
 let nameError = document.querySelector("#firstNameErrorMsg");
 let lastNameError = document.querySelector("#lastNameErrorMsg");
 let addressError = document.querySelector("#addressErrorMsg");
@@ -196,13 +196,17 @@ let formValidated;
 
 //Fonction de validation générique
 function formElementsTest (rxp, element, elementValidated, error){
-   let elementTest = rxp.test(element);
-   if(elementTest == true){
-    elementValidated = true;
-   }
-   else{
-    error.innerHTML = "Ceci est un message d'erreur.";
-   }
+    console.log(element);
+    let elementTest = rxp.test(element);
+    console.log(elementTest);
+    if(elementTest == true){
+        elementValidated = true;
+    }
+    else{
+        elementValidated = false;
+        error.innerHTML = "Ceci est un message d'erreur.";
+    }
+   console.log(elementValidated);
 }
 
 //Validation 2ème étape (tous les éléments)
@@ -212,13 +216,14 @@ function formValidation(){
     formElementsTest(rxpAddress, formAddress, addressValidated, addressError);
     formElementsTest(rxpNamesAndCity, formCity, cityValidated, cityError);
     formElementsTest(rxpEmail, formEmail, emailValidated, emailError);
-    if(nameValidated == true && lastNameValidated == true && addressValidated == true && cityValidated == true && emailValidated == true && elementsValidated == true)
+    formValidated = true;
+  /*   if(nameValidated === true && lastNameValidated === true && addressValidated === true && cityValidated === true && emailValidated === true && elementsValidated === true)
     {
         formValidated = true;
     }
     else{
         formValidated = false;
-    }
+    } */
 }
 
 //Requête POST API
@@ -234,18 +239,18 @@ sendOrder.json().then( orderid => {
 //Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
-    event.preventDefault;
+    event.preventDefault();
     formValidation();
-    if(formValidated == true){
+    if(formValidated === true){
         //Création de l'objet de contact
-        /* let customerContact = {
+        let customerContact = {
             name: formName,
             lastname: formLastName,
             address: formAddress,
             city: formCity,
             email: formEmail,
         };
-        console.log(customerContact); */
+        console.log(customerContact);
         //fontion pour la requete POST de l'API
         //window.location.href="confirmation.html";  
     }

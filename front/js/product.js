@@ -28,8 +28,7 @@ function productDisplay(product){
     productPrice.innerHTML = product.price;
         //Formatage prix
         let productPriceData = product.price;
-        let productPriceForm = productPriceData/100;
-        productPrice.innerHTML = productPriceForm;
+        productPrice.innerHTML = productPriceData;
 
     //Ajout description
     let productDescription = document.querySelector("#description");
@@ -58,22 +57,21 @@ addBtn.addEventListener("click", (event) =>{
 
     //Création des constantes pour les valeurs du produit
     let colorValue = productColor.value;
-    let quantitySelected = productQuantity.value;
+    let quantitySelected = Number(productQuantity.value);
 
-    //Recupération valeurs du produit
-    let productSelected = {
-        id: id,
-        color: colorValue,
-        quantity: quantitySelected,
-    };
-    console.log(productSelected);
-
-    //Création du tableau des valeurs
-    let arrayCart = [];
-    
     //Conditions
-    if (quantitySelected >= 1 && quantitySelected <= 100 && colorValue !== null){
+    if (quantitySelected >= 1 && quantitySelected <= 100 && colorValue !== ""){
 
+        //Recupération valeurs du produit
+        let productSelected = {
+            id: id,
+            color: colorValue,
+            quantity: quantitySelected,
+        };
+        console.log(productSelected);
+
+        //Création du tableau des valeurs
+        let arrayCart = [];
     
         //Vérfication que le LocalStorage n'existe pas
         if (localStorage.getItem("cart-products") == null) {
@@ -86,14 +84,16 @@ addBtn.addEventListener("click", (event) =>{
         //Sinon, récupération du tableau dans le LS
         else{
             arrayCart = JSON.parse(localStorage.getItem("cart-products"));
-        
+            
             //Vérification que le même produit existe dans le tableau
             let prodSelectId = productSelected.id;
-            let prodSelectVerif = arrayCart.includes();
-            console.log(prodSelectVerif);
-            if(prodSelectVerif == true){
-                arrayCart.push(productSelected);
-                console.log(productSelected.id);
+            console.log(prodSelectId);
+            if (arrayCart.find(object => {object.id === prodSelectId})) {
+                window.alert("encontrado");
+            }
+            // if(prodSelectVerif == true){
+            //     arrayCart.push(productSelected);
+            //     console.log(productSelected.id);
               /*   //Si oui, récuperer de l'élément produit du tableau
                 let arrayCartElement = arrayCart.indexOf(productSelected.id);
 
@@ -112,14 +112,14 @@ addBtn.addEventListener("click", (event) =>{
                 else{
                     arrayCart.push(productSelected);
                 }
-                console.log(arrayCartElement); */
-            }
+                console.log(arrayCartElement);
+            }*/
 
             //Si non, insertion de l'élément
-            else{
+           /*  else{
                 arrayCart.push(productSelected);
-            }
-            localStorage.setItem("cart-products", JSON.stringify(arrayCart));
+            }*/
+            // localStorage.setItem("cart-products", JSON.stringify(arrayCart));
         }
         console.log(arrayCart)
 
