@@ -101,9 +101,9 @@ function cartProductDisplay(){
             console.log(arrayCrtPrices);
             localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
             })   
-
+            
         //Création d'un tableau de quantités dabs le LS pour le calcul du total
-        let itemTotalQuantity = parseFloat(cartContent[object].quantity);
+        let itemTotalQuantity = cartContent[object].quantity;
         arrayCrtQuant.push(itemTotalQuantity);
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
 
@@ -122,18 +122,24 @@ function cartProductDisplay(){
                 let selectedItemColor = selectItem.getAttribute("data-color");
                 console.log(selectedItemColor);
                 console.log(selectedItemId);
-                
 
-                //Selectionner l'article avec cet id et couleur dans le LS
-                let selectedIndex = cartContent.indexOf(selectedItemId, selectedItemColor);
-                console.log(selectedIndex);
-                
-                //eliminer l'élément du tableau et MAJ du LS
-                /* cartContent.splice(selectedIndex, 1);
-                localStorage.setItem("cart-products", JSON.stringify(arrayCart)); */
+                //Selectionner lindex de l'article avec cet id et la couleur dans le tableau
+                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
+                console.log(selectedProd);
+                let selectedProdIndex = cartContent.indexOf(selectedProd);
+                console.log(selectedProdIndex);
+                cartContent.splice(selectedProdIndex, 1);
+                console.log(cartContent);
+
+                //Vidage du LS pour la quantité et le prix (pour recalcul)
+                localStorage.removeItem("cart-prices");
+                localStorage.removeItem("cart-quantities");
+
+                //Modification du LS
+                localStorage.setItem("cart-products", JSON.stringify(cartContent));
 
                 //recharger la page
-                // location.reload;
+                window.reload;
             }
         })
     }
@@ -171,7 +177,7 @@ displayCartQuantity();
 let rxpNamesAndCity = new RegExp(/^[a-z ,.'-]+$/i);
 
 //Addresse
-let rxpAddress = new RegExp(/^$[A-Za-z0-9]{5,100}/);
+let rxpAddress = new RegExp(/^[A-Za-z0-9]{5,100}$/);
 
 //email
 let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
@@ -226,16 +232,6 @@ function formValidation(){
     } */
 }
 
-//Requête POST API
-let customerContact;
-/* const sendOrder = await fetch('http://localhost:3000/api/products/order', {
-    method: 'POST',
-    body: customerContact,
-})
-sendOrder.json().then( orderid => {
-    console.log(orderid);
-}) */
-
 //Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
@@ -251,8 +247,20 @@ orderBtn.addEventListener("click", function(){
             email: formEmail,
         };
         console.log(customerContact);
-        //fontion pour la requete POST de l'API
-        //window.location.href="confirmation.html";  
+
+        //Requete POST
+        fetch('http://localhost:3000/api/products/order', {
+        method: 'POST',
+        body: JSON.stringify(customerContact, cartContent), 
+        })
+
+        //Récupération du nº de commande
+        let orderNumber = response.json();
+        console.log(orderNumber);
+
+        //Création de la page confirmation spécifique à la commande
+        let orderId = stringify(orderNumber);
+        window.location.href=`product.html?id=${orderId}`;  
     }
     else{
         window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");

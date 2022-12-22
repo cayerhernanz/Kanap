@@ -90,7 +90,6 @@ addBtn.addEventListener("click", (event) =>{
             let prodSelectQuantity = productSelected.quantity;
             console.log(prodSelectQuantity);
             if (arrayCart.find(object => object.id === prodSelectId && object.color === prodSelectColor)) {
-                window.alert("encontrado");
                 let equalProduct = arrayCart.find(object => object.id === prodSelectId && object.color === prodSelectColor);
                 let productCurrentQuantity = equalProduct.quantity;
                 let productNewQuantity = productCurrentQuantity + prodSelectQuantity;
