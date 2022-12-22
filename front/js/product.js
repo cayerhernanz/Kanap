@@ -68,7 +68,6 @@ addBtn.addEventListener("click", (event) =>{
             color: colorValue,
             quantity: quantitySelected,
         };
-        console.log(productSelected);
 
         //Création du tableau des valeurs
         let arrayCart = [];
@@ -85,46 +84,29 @@ addBtn.addEventListener("click", (event) =>{
         else{
             arrayCart = JSON.parse(localStorage.getItem("cart-products"));
             
-            //Vérification que le même produit existe dans le tableau
+            //Vérification que le même produit existe dans le tableau(id et couleur)
             let prodSelectId = productSelected.id;
-            console.log(prodSelectId);
-            if (arrayCart.find(object => {object.id === prodSelectId})) {
+            let prodSelectColor = productSelected.color;
+            let prodSelectQuantity = productSelected.quantity;
+            console.log(prodSelectQuantity);
+            if (arrayCart.find(object => object.id === prodSelectId && object.color === prodSelectColor)) {
                 window.alert("encontrado");
+                let equalProduct = arrayCart.find(object => object.id === prodSelectId && object.color === prodSelectColor);
+                let productCurrentQuantity = equalProduct.quantity;
+                let productNewQuantity = productCurrentQuantity + prodSelectQuantity;
+                equalProduct.quantity = productNewQuantity;
+                console.log(productNewQuantity);
             }
-            // if(prodSelectVerif == true){
-            //     arrayCart.push(productSelected);
-            //     console.log(productSelected.id);
-              /*   //Si oui, récuperer de l'élément produit du tableau
-                let arrayCartElement = arrayCart.indexOf(productSelected.id);
-
-                //Comparer les couleurs
-                if(productSelected.color == arrayCartElement.color){
-
-                    //Si elles sont pareilles ajouter la quantité sélectionnée au tableau
-                    let arrCtElQuantity = parseFloat(arrayCartElement.quantity);
-                    let productSelectedQuantity = parseFloat(productSelected.quantity);
-                    let arrCtElementNewQuantity = arrCtElQuantity + productSelectedQuantity;
-                    arrayCart.splice(arrayCartElement, 3, arrCtElementNewQuantity);
-                    console.log(arrCtElementNewQuantity);
-                }
-
-                //Si elles sont différentes insérer l'élément au tableau
-                else{
-                    arrayCart.push(productSelected);
-                }
-                console.log(arrayCartElement);
-            }*/
-
+            
             //Si non, insertion de l'élément
-           /*  else{
+            else{
                 arrayCart.push(productSelected);
-            }*/
-            // localStorage.setItem("cart-products", JSON.stringify(arrayCart));
+            }
+        localStorage.setItem("cart-products", JSON.stringify(arrayCart));
         }
-        console.log(arrayCart)
 
         //Rédirection à la page panier
-        // window.location.href = "cart.html";
+        window.location.href = "cart.html";
     }
 
         //En cas de manque de donnée
