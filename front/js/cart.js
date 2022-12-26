@@ -144,7 +144,6 @@ function cartProductDisplay(){
         })
     }
 }
-
 cartProductDisplay(cartContent);
 
 //Calcul du prix total du pannier et de la quantité totale
@@ -177,10 +176,10 @@ displayCartQuantity();
 let rxpNamesAndCity = new RegExp(/^[a-z ,.'-]+$/i);
 
 //Addresse
-let rxpAddress = new RegExp(/^[A-Za-z0-9]{5,100}$/);
+let rxpAddress = new RegExp(/^[a-zA-Z0-9\s,'-]*$/);
 
 //email
-let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 
 //création des variables pour la fonction
 let formName = document.getElementById("firstName").value;
@@ -223,8 +222,7 @@ function formValidation(){
     formElementsTest(rxpNamesAndCity, formCity, cityValidated, cityError);
     formElementsTest(rxpEmail, formEmail, emailValidated, emailError);
     formValidated = true;
-  /*   if(nameValidated === true && lastNameValidated === true && addressValidated === true && cityValidated === true && emailValidated === true && elementsValidated === true)
-    {
+    /* if(nameValidated === true && lastNameValidated === true && addressValidated === true && cityValidated === true && emailValidated === true && elementsValidated === true){
         formValidated = true;
     }
     else{
@@ -238,21 +236,25 @@ orderBtn.addEventListener("click", function(){
     event.preventDefault();
     formValidation();
     if(formValidated === true){
-        //Création de l'objet de contact
-        let customerContact = {
-            name: formName,
-            lastname: formLastName,
-            address: formAddress,
-            city: formCity,
-            email: formEmail,
-        };
-        console.log(customerContact);
+        //Création de l'objet de contact et le tableau d'ids
+        let order = {
+            customerContact : {
+                name: formName,
+                lastname: formLastName,
+                address: formAddress,
+                city: formCity,
+                email: formEmail,
+            },
+            products : cartContent,
+        }
+        console.log(order);
 
         //Requete POST
         fetch('http://localhost:3000/api/products/order', {
         method: 'POST',
-        body: JSON.stringify(customerContact, cartContent), 
+        body: JSON.stringify(order),
         })
+        console.log(body);
 
         //Récupération du nº de commande
         let orderNumber = response.json();
@@ -260,7 +262,8 @@ orderBtn.addEventListener("click", function(){
 
         //Création de la page confirmation spécifique à la commande
         let orderId = stringify(orderNumber);
-        window.location.href=`product.html?id=${orderId}`;  
+        window.location.href=`product.html?id=${orderId}`;
+        //localStorage.clear;
     }
     else{
         window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
