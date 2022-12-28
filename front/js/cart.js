@@ -108,10 +108,10 @@ function cartProductDisplay(){
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
 
         //Suppression des éléments du pannier
-        cartItCntSetDeleteText.addEventListener("click", function(){
-            event.preventDefault;
+        cartItCntSetDeleteText.addEventListener("click", function(event){
+            event.preventDefault();
             let result = confirm("Éliminer le produit du panier?");
-            if (result == true){
+            if (result){
                 //recuperer l'id et la couleur de l'article
                 let currentItem = event.currentTarget;
                 let currentItemParent = currentItem.parentNode;
@@ -139,7 +139,7 @@ function cartProductDisplay(){
                 localStorage.setItem("cart-products", JSON.stringify(cartContent));
 
                 //recharger la page
-                window.reload;
+                window.location.href = "cart.html";
             }
         })
     }
@@ -181,24 +181,6 @@ let rxpAddress = new RegExp(/^[a-zA-Z0-9\s,'-]*$/);
 //email
 let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 
-//création des variables pour la fonction
-let formName = document.getElementById("firstName").value;
-let formLastName = document.getElementById("lastName").value;
-let formAddress = document.getElementById("address").value;
-let formCity = document.getElementById("city").value;
-let formEmail = document.getElementById("email").value;
-let nameError = document.querySelector("#firstNameErrorMsg");
-let lastNameError = document.querySelector("#lastNameErrorMsg");
-let addressError = document.querySelector("#addressErrorMsg");
-let cityError = document.querySelector("#cityErrorMsg");
-let emailError = document.querySelector("#emailErrorMsg");
-let nameValidated;
-let lastNameValidated;
-let addressValidated;
-let cityValidated;
-let emailValidated;
-let formValidated;
-
 //Fonction de validation générique
 function formElementsTest (rxp, element, elementValidated, error){
     console.log(element);
@@ -214,33 +196,49 @@ function formElementsTest (rxp, element, elementValidated, error){
    console.log(elementValidated);
 }
 
-//Validation 2ème étape (tous les éléments)
-function formValidation(){
-    formElementsTest(rxpNamesAndCity, formName, nameValidated, nameError);
-    formElementsTest(rxpNamesAndCity, formLastName, lastNameValidated, lastNameError);
-    formElementsTest(rxpAddress, formAddress, addressValidated, addressError);
-    formElementsTest(rxpNamesAndCity, formCity, cityValidated, cityError);
-    formElementsTest(rxpEmail, formEmail, emailValidated, emailError);
-    formValidated = true;
-    /* if(nameValidated === true && lastNameValidated === true && addressValidated === true && cityValidated === true && emailValidated === true && elementsValidated === true){
-        formValidated = true;
-    }
-    else{
-        formValidated = false;
-    } */
-}
 
 //Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
     event.preventDefault();
-    formValidation();
+     //création des variables pour les fonctions
+    let formName = document.getElementById("firstName").value;
+    let formLastName = document.getElementById("lastName").value;
+    let formAddress = document.getElementById("address").value;
+    let formCity = document.getElementById("city").value;
+    let formEmail = document.getElementById("email").value;
+    let nameError = document.querySelector("#firstNameErrorMsg");
+    let lastNameError = document.querySelector("#lastNameErrorMsg");
+    let addressError = document.querySelector("#addressErrorMsg");
+    let cityError = document.querySelector("#cityErrorMsg");
+    let emailError = document.querySelector("#emailErrorMsg");
+    let nameValidated;
+    let lastNameValidated;
+    let addressValidated;
+    let cityValidated;
+    let emailValidated;
+    let formValidated;
+ 
+     //Validation par élément
+     formElementsTest(rxpNamesAndCity, formName, nameValidated, nameError);
+     formElementsTest(rxpNamesAndCity, formLastName, lastNameValidated, lastNameError);
+     formElementsTest(rxpAddress, formAddress, addressValidated, addressError);
+     formElementsTest(rxpNamesAndCity, formCity, cityValidated, cityError);
+     formElementsTest(rxpEmail, formEmail, emailValidated, emailError);
+     formValidated = true;
+     /* if(nameValidated === true && lastNameValidated === true && addressValidated === true && cityValidated === true && emailValidated === true && elementsValidated === true){
+         formValidated = true;
+     }
+     else{
+         formValidated = false;
+     } */
+    
     if(formValidated === true){
         //Création de l'objet de contact et le tableau d'ids
         let order = {
-            customerContact : {
-                name: formName,
-                lastname: formLastName,
+            contact : {
+                firstName: formName,
+                lastName: formLastName,
                 address: formAddress,
                 city: formCity,
                 email: formEmail,
@@ -253,11 +251,12 @@ orderBtn.addEventListener("click", function(){
         fetch('http://localhost:3000/api/products/order', {
         method: 'POST',
         body: JSON.stringify(order),
+        headers: { "Content-Type": "application/json" },
         })
-        console.log(body);
+        .then( res => res.json());
 
         //Récupération du nº de commande
-        let orderNumber = response.json();
+        let orderNumber = res.json();
         console.log(orderNumber);
 
         //Création de la page confirmation spécifique à la commande
