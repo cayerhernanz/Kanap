@@ -262,7 +262,7 @@ orderBtn.addEventListener("click", function(){
 
             //Création de la page confirmation spécifique à la commande
             window.location.href=`confirmation.html?order=${orderNum}`;
-            localStorage.clear;
+            localStorage.clear();
         })
         .catch((err) => console.log(err));
     }
