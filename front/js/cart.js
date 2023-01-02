@@ -1,6 +1,7 @@
 //Variables
 let cartContent = JSON.parse(localStorage.getItem("cart-products"));
 console.log(cartContent);
+let arrayProdId = [];
 
 //Affichage des produits du pannier à partir du LS
 function cartProductDisplay(){
@@ -12,6 +13,7 @@ function cartProductDisplay(){
     for (let object in cartContent){
 
         let id = cartContent[object].id;
+        arrayProdId.push(id);
 
         //Article
         let cartItem = document.createElement("article");
@@ -196,7 +198,6 @@ function formElementsTest (rxp, element, elementValidated, error){
    console.log(elementValidated);
 }
 
-
 //Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
@@ -243,7 +244,7 @@ orderBtn.addEventListener("click", function(){
                 city: formCity,
                 email: formEmail,
             },
-            products : cartContent,
+            products : arrayProdId,
         }
         console.log(order);
 
@@ -253,19 +254,19 @@ orderBtn.addEventListener("click", function(){
         body: JSON.stringify(order),
         headers: { "Content-Type": "application/json" },
         })
-        .then( res => res.json());
+        .then((res) => res.json())
+        .then((order) => {
+            console.log('order', order);
+            let orderNum = order.orderId;
+            console.log(orderNum);
 
-        //Récupération du nº de commande
-        let orderNumber = res.json();
-        console.log(orderNumber);
-
-        //Création de la page confirmation spécifique à la commande
-        let orderId = stringify(orderNumber);
-        window.location.href=`product.html?id=${orderId}`;
-        //localStorage.clear;
+            //Création de la page confirmation spécifique à la commande
+            window.location.href=`confirmation.html?order=${orderNum}`;
+            localStorage.clear;
+        })
+        .catch((err) => console.log(err));
     }
     else{
         window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
     }
 })
-

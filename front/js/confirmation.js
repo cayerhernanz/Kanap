@@ -1,6 +1,7 @@
 let params = new URL(document.location).searchParams;
-let orderId = params.get("orderId");
+let orderNum = params.get("order");
+console.log(orderNum);
 
 //Affichage du numero de commande
 let idDisplay = document.querySelector("#orderId");
-idDisplay.innerHTML = orderId;
+idDisplay.innerHTML = orderNum;
