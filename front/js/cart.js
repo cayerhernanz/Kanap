@@ -79,6 +79,7 @@ function cartProductDisplay(){
         cartItCntSetDelete.classList.add("cart__item__content__settings__delete")
 
         let cartItCntSetDeleteText = document.createElement("p");
+        cartItCntSetDeleteText.classList.add("deleteItem");
         cartItCntSetDelete.appendChild(cartItCntSetDeleteText);
         cartItCntSetDeleteText.innerHTML = "Supprimer";
 
@@ -108,42 +109,6 @@ function cartProductDisplay(){
         let itemTotalQuantity = cartContent[object].quantity;
         arrayCrtQuant.push(itemTotalQuantity);
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
-
-        //Suppression des éléments du pannier
-        cartItCntSetDeleteText.addEventListener("click", function(event){
-            event.preventDefault();
-            let result = confirm("Éliminer le produit du panier?");
-            if (result){
-                //recuperer l'id et la couleur de l'article
-                let currentItem = event.currentTarget;
-                let currentItemParent = currentItem.parentNode;
-                let selectItemCont = currentItemParent.parentNode;
-                let selectItemContParent = selectItemCont.parentNode;
-                let selectItem = selectItemContParent.parentNode;
-                let selectedItemId = selectItem.getAttribute("data-id");
-                let selectedItemColor = selectItem.getAttribute("data-color");
-                console.log(selectedItemColor);
-                console.log(selectedItemId);
-
-                //Selectionner lindex de l'article avec cet id et la couleur dans le tableau
-                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
-                console.log(selectedProd);
-                let selectedProdIndex = cartContent.indexOf(selectedProd);
-                console.log(selectedProdIndex);
-                cartContent.splice(selectedProdIndex, 1);
-                console.log(cartContent);
-
-                //Vidage du LS pour la quantité et le prix (pour recalcul)
-                localStorage.removeItem("cart-prices");
-                localStorage.removeItem("cart-quantities");
-
-                //Modification du LS
-                localStorage.setItem("cart-products", JSON.stringify(cartContent));
-
-                //recharger la page
-                window.location.href = "cart.html";
-            }
-        })
     }
 }
 cartProductDisplay(cartContent);
@@ -171,6 +136,52 @@ function displayCartQuantity(){
 
 displayCartPrice();
 displayCartQuantity();
+
+//Suppression des éléments du pannier
+let deleteItemBtnList = document.querySelectorAll(".deleteItem");
+console.log(deleteItemBtnList);
+function itemDelete(){
+    for (let deleteBtn of deleteItemBtnList){
+        deleteBtn.addEventListener("click", function(){
+        event.preventDefault();
+        let result = confirm("Éliminer le produit du panier?");
+            if (result){
+            //recuperer l'id et la couleur de l'article
+                let currentItem = event.currentTarget;
+                let currentItemParent = currentItem.parentNode;
+                let selectItemCont = currentItemParent.parentNode;
+                let selectItemContParent = selectItemCont.parentNode;
+                let selectItem = selectItemContParent.parentNode;
+                let selectedItemId = selectItem.getAttribute("data-id");
+                let selectedItemColor = selectItem.getAttribute("data-color");
+                console.log(selectedItemColor);
+                console.log(selectedItemId);
+
+                //Selectionner lindex de l'article avec cet id et la couleur dans le tableau
+                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
+                console.log(selectedProd);
+                let selectedProdIndex = cartContent.indexOf(selectedProd);
+                console.log(selectedProdIndex);
+                cartContent.splice(selectedProdIndex, 1);
+                console.log(cartContent);
+
+                //Vidage du LS pour la quantité et le prix (pour recalcul)
+                localStorage.removeItem("cart-prices");
+                localStorage.removeItem("cart-quantities");
+
+                //Modification du LS
+                localStorage.setItem("cart-products", JSON.stringify(cartContent));
+
+                //recharger la page
+                window.location.href = "cart.html";
+                cartProductDisplay(cartContent);
+                displayCartPrice();
+                displayCartQuantity();
+            }
+        }
+    )}
+}
+itemDelete();
 
 //Validation du formulaire
 //Création des différnetes RegExp pour la validation
