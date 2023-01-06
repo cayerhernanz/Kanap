@@ -76,8 +76,8 @@ addBtn.addEventListener("click", (event) =>{
         if (localStorage.getItem("cart-products") == null) {
 
             //Création du LS et insertion du tableau
-            localStorage.setItem("cart-products", JSON.stringify(arrayCart));
             arrayCart.push(productSelected);
+            localStorage.setItem("cart-products", JSON.stringify(arrayCart));
         }
 
         //Sinon, récupération du tableau dans le LS

@@ -194,29 +194,11 @@ let rxpAddress = new RegExp(/^[a-zA-Z0-9\s,'-]*$/);
 //email
 let rxpEmail = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 
-//Fonction de validation générique (marche pas?? rend undefined)
-function formElementsTest (elementTest, rxp, element, elementValidated, error){
-    elementTest = rxp.test(element);
-    if(elementTest == true){
-        elementValidated = true;
-    }
-    else{
-        elementValidated = false;
-        error.innerHTML = "Ceci est un message d'erreur.";
-    }
-    console.log(elementValidated);
-}
-
 //Commander
 let orderBtn = document.querySelector("#order");
 orderBtn.addEventListener("click", function(){
     event.preventDefault();
     //création des variables pour les fonctions
-    /* let nameTest;
-    let lastNameTest;
-    let addressTest;
-    let cityTest;
-    let emailTest; */
     let formName = document.getElementById("firstName").value;
     let formLastName = document.getElementById("lastName").value;
     let formAddress = document.getElementById("address").value;
@@ -235,7 +217,6 @@ orderBtn.addEventListener("click", function(){
     let formValidated;
  
     //Validation par élément
-    // formElementsTest(nameTest, rxpNamesAndCity, formName, nameValidated, nameError);
     let nameTest = rxpNamesAndCity.test(formName);
     if(nameTest === true){
         nameValidated = true;
@@ -245,7 +226,6 @@ orderBtn.addEventListener("click", function(){
         nameError.innerHTML = "Ceci est un message d'erreur.";
     }
     console.log(nameValidated);
-    // formElementsTest(lastNameTest, rxpNamesAndCity, formLastName, lastNameValidated, lastNameError);
     let lastNameTest = rxpNamesAndCity.test(formLastName);
     if(lastNameTest === true){
         lastNameValidated = true;
@@ -255,7 +235,6 @@ orderBtn.addEventListener("click", function(){
         lastNameError.innerHTML = "Ceci est un message d'erreur.";
     }
     console.log(lastNameValidated);
-    // formElementsTest(addressTest, rxpAddress, formAddress, addressValidated, addressError);
     let addressTest = rxpAddress.test(formName);
     if(addressTest === true){
         addressValidated = true;
@@ -265,7 +244,6 @@ orderBtn.addEventListener("click", function(){
         addressError.innerHTML = "Ceci est un message d'erreur.";
     }
     console.log(addressValidated);
-    // formElementsTest(cityTest, rxpNamesAndCity, formCity, cityValidated, cityError);
     let cityTest = rxpNamesAndCity.test(formCity);
     if(cityTest === true){
         cityValidated = true;
@@ -275,7 +253,6 @@ orderBtn.addEventListener("click", function(){
         cityError.innerHTML = "Ceci est un message d'erreur.";
     }
     console.log(cityValidated);
-    // formElementsTest(emailTest, rxpEmail, formEmail, emailValidated, emailError);
     let emailTest = rxpEmail.test(formEmail);
     if(emailTest === true){
         emailValidated = true;
@@ -325,6 +302,6 @@ orderBtn.addEventListener("click", function(){
         .catch((err) => console.log(err));
     }
     else{
-        // window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
+        window.alert("Une erreur est survenue, veuillez vérifer le formulaire.");
     }
 })
