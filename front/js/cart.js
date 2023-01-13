@@ -92,23 +92,43 @@ function cartProductDisplay(){
             cartItemImageFile.src = APIresults.imageUrl;
             cartItemImageFile.alt = APIresults.altTxt;
             cartItCntDesProdname.innerHTML = APIresults.name;
-            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(APIresults.price);
+            let cartItPricenoformat = APIresults.price;
+            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(cartItPricenoformat);
 
-            //Calcul du prix en fonctiond e la quantité par produit
-            let itemTotalQuantity = parseFloat(cartItCntSetQuantValue.value);
-            let itemPriceCalc = parseFloat(APIresults.price);
-            let itemTotalPrice = itemPriceCalc * itemTotalQuantity;
-
-            //Création d'un tableau de prix dans le LS pour le calcul du total
-            arrayCrtPrices.push(itemTotalPrice);
-            console.log(arrayCrtPrices);
-            localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
+            //Ajout du prix du produit au LS pour le calcul du total
+            let itemPrice = parseFloat(cartItPricenoformat);
+            console.log(itemPrice);
+            localStorage.setItem("item-price", JSON.stringify(itemPrice));
             })   
             
-        //Création d'un tableau de quantités dabs le LS pour le calcul du total
+        //Création d'un tableau de quantités dans le LS pour le calcul du total
         let itemTotalQuantity = cartContent[object].quantity;
         arrayCrtQuant.push(itemTotalQuantity);
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
+
+        //Modification de la quantité 
+        let quantitySelector = document.querySelector(".itemQuantity");
+        quantitySelector.addEventListener("click", function(){
+            let changeAlert = confirm("Modifier la quantité de ce produit?");
+                if (changeAlert){
+                    //Récupérer la nouvelle quantité
+                    let itemNewQuantity = document.querySelector(".itemQuantity");
+                    //Affichage de la nouvelle quantité
+                    cartItCntSetQuantValue.value = itemNewQuantity;
+                }
+        })
+
+        //Calcul du prix en fonction de la quantité par produit
+        let itemPriceRecupered = document.querySelector(".item__price").textContent;
+        console.log(itemPriceRecupered);
+        let itemTotalQuantityCalc = parseFloat(quantitySelector.value);
+        let itemPrice = JSON.parse(localStorage.getItem("item-price"));
+        let itemPriceCalc = parseFloat(itemPrice);
+        let itemTotalPrice = itemTotalQuantityCalc * itemPriceCalc;
+        arrayCrtPrices.push(itemTotalPrice);
+        console.log(itemTotalQuantityCalc);
+        console.log(arrayCrtPrices);
+        localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
     }
 }
 cartProductDisplay(cartContent);
