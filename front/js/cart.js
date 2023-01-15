@@ -95,39 +95,23 @@ function cartProductDisplay(){
             let cartItPricenoformat = APIresults.price;
             cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(cartItPricenoformat);
 
-            //Ajout du prix du produit au LS pour le calcul du total
-            let itemPrice = parseFloat(cartItPricenoformat);
-            console.log(itemPrice);
-            localStorage.setItem("item-price", JSON.stringify(itemPrice));
-            })   
-            
+            //Calcul du prix en fonction de la quantité par produit
+            let itemPriceCalc = parseFloat(cartItPricenoformat);
+            localStorage.setItem("item-price", JSON.stringify(itemPriceCalc));
+        })
+
         //Création d'un tableau de quantités dans le LS pour le calcul du total
         let itemTotalQuantity = cartContent[object].quantity;
         arrayCrtQuant.push(itemTotalQuantity);
         localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
 
-        //Modification de la quantité 
-        let quantitySelector = document.querySelector(".itemQuantity");
-        quantitySelector.addEventListener("click", function(){
-            let changeAlert = confirm("Modifier la quantité de ce produit?");
-                if (changeAlert){
-                    //Récupérer la nouvelle quantité
-                    let itemNewQuantity = document.querySelector(".itemQuantity");
-                    //Affichage de la nouvelle quantité
-                    cartItCntSetQuantValue.value = itemNewQuantity;
-                }
-        })
-
-        //Calcul du prix en fonction de la quantité par produit
-        let itemPriceRecupered = document.querySelector(".item__price").textContent;
-        console.log(itemPriceRecupered);
-        let itemTotalQuantityCalc = parseFloat(quantitySelector.value);
+        //Calcul du prix total par produit
+        let itemTotalQuantityCalc = parseFloat(itemTotalQuantity);
         let itemPrice = JSON.parse(localStorage.getItem("item-price"));
-        let itemPriceCalc = parseFloat(itemPrice);
+        let itemPriceCalc = parseFloat(itemPrice)
         let itemTotalPrice = itemTotalQuantityCalc * itemPriceCalc;
+        console.log(itemTotalPrice);
         arrayCrtPrices.push(itemTotalPrice);
-        console.log(itemTotalQuantityCalc);
-        console.log(arrayCrtPrices);
         localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
     }
 }
@@ -157,6 +141,52 @@ function displayCartQuantity(){
 displayCartPrice();
 displayCartQuantity();
 
+//Modification de la quantité 
+let quantitySelectors = document.querySelectorAll(".itemQuantity");
+console.log(quantitySelectors);
+function quantityModification(){
+    for (let quantitySelector of quantitySelectors){
+        quantitySelector.addEventListener("change", function(){
+            event.preventDefault();
+            let changeAlert = confirm("Modifier la quantité de ce produit?");
+            if (changeAlert){  
+                //Récupérer l'article modifié, son id et sa couleur
+                let currentItem = quantitySelector.closest('article');
+                let selectedItemColor = currentItem.dataset.color;
+                let selectedItemId = currentItem.dataset.id;
+
+                //Récupérer la nouvelle quantité
+                let itemQuantInput = document.querySelector(".itemQuantity");
+                let itemNewQuantity = parseFloat(itemQuantInput.value);
+                console.log(itemNewQuantity);
+                
+                //Selectionner l'index de l'article avec cet id et la couleur dans le tableau LS avec le panier
+                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
+                console.log(selectedProd);
+                let selectedProdIndex = cartContent.indexOf(selectedProd);
+                
+                //Modifier la quantité de l'article dans ce tableau
+                cartContent[selectedProdIndex].quantity = itemNewQuantity;
+                console.log(cartContent);
+
+                //Modification du LS
+                localStorage.setItem("cart-products", JSON.stringify(cartContent));
+
+                //Vidage du LS pour la quantité et le prix (pour recalcul)
+                localStorage.removeItem("cart-prices");
+                localStorage.removeItem("cart-quantities");
+
+                //recharger la page
+                window.location.href = "cart.html";
+                cartProductDisplay(cartContent);
+                displayCartPrice();
+                displayCartQuantity();
+            }
+        })
+    }
+}
+quantityModification();
+
 //Suppression des éléments du pannier
 let deleteItemBtnList = document.querySelectorAll(".deleteItem");
 console.log(deleteItemBtnList);
@@ -166,18 +196,15 @@ function itemDelete(){
         event.preventDefault();
         let result = confirm("Éliminer le produit du panier?");
             if (result){
-            //recuperer l'id et la couleur de l'article
-                let currentItem = event.currentTarget;
-                let currentItemParent = currentItem.parentNode;
-                let selectItemCont = currentItemParent.parentNode;
-                let selectItemContParent = selectItemCont.parentNode;
-                let selectItem = selectItemContParent.parentNode;
-                let selectedItemId = selectItem.getAttribute("data-id");
-                let selectedItemColor = selectItem.getAttribute("data-color");
+                //recuperer l'id et la couleur de l'article
+                let selectItem = deleteBtn.closest('article');
+                //priviligier element.dataset.color???
+                let selectedItemId = selectItem.dataset.id;
+                let selectedItemColor = selectItem.dataset.color;
                 console.log(selectedItemColor);
                 console.log(selectedItemId);
 
-                //Selectionner lindex de l'article avec cet id et la couleur dans le tableau
+                //Selectionner l'index de l'article avec cet id et la couleur dans le tableau
                 let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
                 console.log(selectedProd);
                 let selectedProdIndex = cartContent.indexOf(selectedProd);
