@@ -2,17 +2,17 @@
 let cartContent = JSON.parse(localStorage.getItem("cart-products"));
 console.log(cartContent);
 let arrayProdId = [];
+let totalQuantity = 0;
+let totalPrice = 0;
 
 //Affichage des produits du pannier à partir du LS
 function cartProductDisplay(){
     let cart = document.querySelector("#cart__items");
-    let arrayCrtPrices = [];
-    let arrayCrtQuant = [];
 
     //Boucle pour tous les éléments du panier
-    for (let object in cartContent){
+    for (let object of cartContent){
 
-        let id = cartContent[object].id;
+        let id = object.id;
         arrayProdId.push(id);
 
         //Article
@@ -20,7 +20,7 @@ function cartProductDisplay(){
         cart.appendChild(cartItem);
         cartItem.classList.add("cart__item");
         cartItem.dataset.id = id;
-        cartItem.dataset.color = cartContent[object].color;
+        cartItem.dataset.color = object.color;
 
         //Image
         let cartItemImage = document.createElement("div");
@@ -45,7 +45,7 @@ function cartProductDisplay(){
         
         let cartItCntDesProdColor = document.createElement("p");
         cartItemContentDescription.appendChild(cartItCntDesProdColor);
-        cartItCntDesProdColor.innerHTML = cartContent[object].color;
+        cartItCntDesProdColor.innerHTML = object.color;
         
         let cartItCntDesProdPrice = document.createElement("p");
         cartItCntDesProdPrice.classList.add("item__price");
@@ -71,7 +71,11 @@ function cartProductDisplay(){
         cartItCntSetQuantValue.name = "itemQuantity";
         cartItCntSetQuantValue.min = 1;
         cartItCntSetQuantValue.max = 100;
-        cartItCntSetQuantValue.value = cartContent[object].quantity;
+        cartItCntSetQuantValue.value = object.quantity;
+        //Listener modifier quantiité
+        cartItCntSetQuantValue.addEventListener("change", function(e){
+            quantityModification(e);
+        });
 
         //Contenu-Settings-Supprimer
         let cartItCntSetDelete = document.createElement("div");
@@ -82,153 +86,97 @@ function cartProductDisplay(){
         cartItCntSetDeleteText.classList.add("deleteItem");
         cartItCntSetDelete.appendChild(cartItCntSetDeleteText);
         cartItCntSetDeleteText.innerHTML = "Supprimer";
+        //Listener supprimer (appel function event, puis à l'interieur appel a la fonction de supression)
+        cartItCntSetDeleteText.addEventListener("click", function(e){
+            itemDelete(e);
+        });
 
         //Appel à l'API pour récupérer les données nécéssaires
         fetch(`http://localhost:3000/api/products/${id}`)
-            .then((res)=>res.json())
-            .then((APIresults) => {
+        .then((res)=>res.json())
+        .then((APIresults) => {
 
             //Ajout des contenus à partir de l'API
             cartItemImageFile.src = APIresults.imageUrl;
             cartItemImageFile.alt = APIresults.altTxt;
             cartItCntDesProdname.innerHTML = APIresults.name;
-            let cartItPricenoformat = APIresults.price;
-            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(cartItPricenoformat);
+            cartItCntDesProdPrice.innerHTML = Intl.NumberFormat('fr-FR', {style: 'currency', currency:'EUR'}).format(APIresults.price);
 
             //Calcul du prix en fonction de la quantité par produit
-            let itemPriceCalc = parseFloat(cartItPricenoformat);
-            localStorage.setItem("item-price", JSON.stringify(itemPriceCalc));
+            totalPrice = totalPrice + object.quantity * APIresults.price;
+            displayCartPrice();
         })
 
-        //Création d'un tableau de quantités dans le LS pour le calcul du total
-        let itemTotalQuantity = cartContent[object].quantity;
-        arrayCrtQuant.push(itemTotalQuantity);
-        localStorage.setItem("cart-quantities", JSON.stringify(arrayCrtQuant));
-
-        //Calcul du prix total par produit
-        let itemTotalQuantityCalc = parseFloat(itemTotalQuantity);
-        let itemPrice = JSON.parse(localStorage.getItem("item-price"));
-        let itemPriceCalc = parseFloat(itemPrice)
-        let itemTotalPrice = itemTotalQuantityCalc * itemPriceCalc;
-        console.log(itemTotalPrice);
-        arrayCrtPrices.push(itemTotalPrice);
-        localStorage.setItem("cart-prices", JSON.stringify(arrayCrtPrices));
+       totalQuantity = totalQuantity + object.quantity;
     }
+    
+    displayCartQuantity();
 }
 cartProductDisplay(cartContent);
 
 //Calcul du prix total du pannier et de la quantité totale
-//Création des variables et d'un tableau contenant les prix
-let cartQuantity = document.querySelector("#totalQuantity");
-let cartTotalPrice = document.querySelector("#totalPrice");
-let arrayCrtPrices = [];
-let arrayCrtQuant = [];
-
 function displayCartPrice(){
-    arrayCrtPrices = JSON.parse(localStorage.getItem("cart-prices"));
-    let crtTotalPrice = arrayCrtPrices.reduce((accumulator, currentValue) => accumulator + currentValue);
-    let cartPrice = parseFloat(crtTotalPrice);
-    cartTotalPrice.innerHTML = cartPrice;
+    document.querySelector("#totalPrice").innerHTML = totalPrice;
 }
 
 function displayCartQuantity(){
-    arrayCrtQuant = JSON.parse(localStorage.getItem("cart-quantities"));
-    let crtTotalQuant = arrayCrtQuant.reduce((accumulator, currentValue) => accumulator + currentValue);
-    let crtQuantValue = parseFloat(crtTotalQuant);
-    cartQuantity.innerHTML = crtQuantValue;
+    document.querySelector("#totalQuantity").innerHTML = totalQuantity;
 }
-
-displayCartPrice();
-displayCartQuantity();
 
 //Modification de la quantité 
-let quantitySelectors = document.querySelectorAll(".itemQuantity");
-console.log(quantitySelectors);
-function quantityModification(){
-    for (let quantitySelector of quantitySelectors){
-        quantitySelector.addEventListener("change", function(){
-            event.preventDefault();
-            let changeAlert = confirm("Modifier la quantité de ce produit?");
-            if (changeAlert){  
-                //Récupérer l'article modifié, son id et sa couleur
-                let currentItem = quantitySelector.closest('article');
-                let selectedItemColor = currentItem.dataset.color;
-                let selectedItemId = currentItem.dataset.id;
+function quantityModification(event){
+    event.preventDefault();
+    // let changeAlert = confirm("Modifier la quantité de ce produit?");
+    let changeAlert = true; // à changer
+    if (changeAlert){  
+        //Récupérer l'article modifié, son id et sa couleur
+        let currentItem = event.target.closest('article');
+        let selectedItemColor = currentItem.dataset.color;
+        let selectedItemId = currentItem.dataset.id;
+        
+        //Selectionner l'index de l'article avec cet id et la couleur dans le tableau LS avec le panier
+        let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
+        let selectedProdIndex = cartContent.indexOf(selectedProd);
 
-                //Récupérer la nouvelle quantité
-                let itemQuantInput = document.querySelector(".itemQuantity");
-                let itemNewQuantity = parseFloat(itemQuantInput.value);
-                console.log(itemNewQuantity);
-                
-                //Selectionner l'index de l'article avec cet id et la couleur dans le tableau LS avec le panier
-                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
-                console.log(selectedProd);
-                let selectedProdIndex = cartContent.indexOf(selectedProd);
-                
-                //Modifier la quantité de l'article dans ce tableau
-                cartContent[selectedProdIndex].quantity = itemNewQuantity;
-                console.log(cartContent);
+        //Récupérer la nouvelle quantité
+        let itemNewQuantity = parseFloat(event.target.value);
+        
+        //Modifier la quantité de l'article dans ce tableau
+        cartContent[selectedProdIndex].quantity = itemNewQuantity;
 
-                //Modification du LS
-                localStorage.setItem("cart-products", JSON.stringify(cartContent));
+        //Modification du LS
+        localStorage.setItem("cart-products", JSON.stringify(cartContent));
 
-                //Vidage du LS pour la quantité et le prix (pour recalcul)
-                localStorage.removeItem("cart-prices");
-                localStorage.removeItem("cart-quantities");
-
-                //recharger la page
-                window.location.href = "cart.html";
-                cartProductDisplay(cartContent);
-                displayCartPrice();
-                displayCartQuantity();
-            }
-        })
+        //recharger la page
+        window.location.href = "cart.html";
     }
 }
-quantityModification();
+
 
 //Suppression des éléments du pannier
-let deleteItemBtnList = document.querySelectorAll(".deleteItem");
-console.log(deleteItemBtnList);
-function itemDelete(){
-    for (let deleteBtn of deleteItemBtnList){
-        deleteBtn.addEventListener("click", function(){
-        event.preventDefault();
-        let result = confirm("Éliminer le produit du panier?");
-            if (result){
-                //recuperer l'id et la couleur de l'article
-                let selectItem = deleteBtn.closest('article');
-                //priviligier element.dataset.color???
-                let selectedItemId = selectItem.dataset.id;
-                let selectedItemColor = selectItem.dataset.color;
-                console.log(selectedItemColor);
-                console.log(selectedItemId);
+function itemDelete(event){
+    event.preventDefault();
+    let result = confirm("Éliminer le produit du panier?");
+    if (result){
+            //recuperer l'id et la couleur de l'article
+            let selectItem = event.target.closest('article');
+            let selectedItemId = selectItem.dataset.id;
+            let selectedItemColor = selectItem.dataset.color;
 
-                //Selectionner l'index de l'article avec cet id et la couleur dans le tableau
-                let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
-                console.log(selectedProd);
-                let selectedProdIndex = cartContent.indexOf(selectedProd);
-                console.log(selectedProdIndex);
-                cartContent.splice(selectedProdIndex, 1);
-                console.log(cartContent);
+            //Selectionner l'index de l'article avec cet id et la couleur dans le tableau
+            let selectedProd = cartContent.find(object => object.id === selectedItemId && object.color === selectedItemColor);
+            let selectedProdIndex = cartContent.indexOf(selectedProd);
+            cartContent.splice(selectedProdIndex, 1);
 
-                //Vidage du LS pour la quantité et le prix (pour recalcul)
-                localStorage.removeItem("cart-prices");
-                localStorage.removeItem("cart-quantities");
+            //Modification du LS
+            localStorage.setItem("cart-products", JSON.stringify(cartContent));
 
-                //Modification du LS
-                localStorage.setItem("cart-products", JSON.stringify(cartContent));
-
-                //recharger la page
-                window.location.href = "cart.html";
-                cartProductDisplay(cartContent);
-                displayCartPrice();
-                displayCartQuantity();
-            }
-        }
-    )}
+            //recharger la page
+            window.location.href = "cart.html";
+    }
 }
-itemDelete();
+
+
 
 //Validation du formulaire
 //Création des différnetes RegExp pour la validation
